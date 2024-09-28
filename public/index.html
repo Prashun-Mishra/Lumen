@@ -1,0 +1,311 @@
+<!-- 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>funCharge: EV Charging Station Locator</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-core.js"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-service.js"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-ui.js"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-mapevents.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://js.api.here.com/v3/3.1/mapsjs-ui.css" />
+</head>
+<body>
+    <header>
+        <h1>funCharge: EV Charging Station Locator</h1>
+        <nav id="user-nav">
+            <span id="user-info"></span>
+            <button id="logout-button">Logout</button>
+        </nav>
+    </header>
+    <main>
+        <div id="map-container"></div>
+        <div id="search-container">
+            <input type="text" id="location-input" placeholder="Enter your location">
+            <button id="search-button">Search</button>
+        </div>
+        <div id="results-container"></div>
+    </main>
+    <script src="script.js"></script>
+</body>
+</html>  -->
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>funCharge: EV Charging Station Locator</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-core.js"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-service.js"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-ui.js"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-mapevents.js"></script>
+    <style>/* Reset default styles */
+        body, h1, h2, h3, p, input, button, form {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        
+        body {
+            background-color: #f3f4f6; /* Light gray background */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        header {
+            background-color: #4CAF50;
+            color: white;
+            width: 100%;
+            padding: 15px;
+            text-align: center;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        header h1 {
+            font-size: 28px;
+        }
+        
+        nav#user-nav {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+        
+        #user-info {
+            margin-right: 10px;
+        }
+        
+        #logout-button {
+            background-color: #d9534f;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        main {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 1200px;
+        }
+        
+        #map-container {
+            width: 100%;
+            height: 500px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        #search-container {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        
+        #location-input {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 300px;
+        }
+        
+        #search-button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        #search-button:hover {
+            background-color: #45a049;
+        }
+        
+        #results-container {
+            margin-top: 20px;
+            width: 100%;
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 10px;
+            background-color: white;
+        }
+        
+        #booking-form-container {
+            background-color: #fff;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 999;
+        }
+        
+        #booking-form input,
+        #booking-form button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+        
+        #booking-form button {
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+            border: none;
+            transition: background-color 0.3s ease;
+        }
+        
+        #booking-form button:hover {
+            background-color: #45a049;
+        }
+        
+        #cancel-booking {
+            background-color: #d9534f;
+        }
+        
+        #admin-login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 20px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: white;
+        }
+        
+        #admin-login-form input,
+        #admin-login-form button {
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            width: 100%;
+        }
+        
+        #admin-login-form button {
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+            border: none;
+            transition: background-color 0.3s ease;
+        }
+        
+        #admin-login-form button:hover {
+            background-color: #45a049;
+        }
+        
+        #admin-portal {
+            background-color: #fff;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        
+        #admin-portal h2 {
+            margin-bottom: 10px;
+        }
+        
+        #admin-dashboard {
+            margin-top: 10px;
+        }
+        
+        #admin-logout {
+            background-color: #d9534f;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        #show-admin-login {
+            margin-top: 20px;
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        #show-admin-login:hover {
+            background-color: #45a049;
+        }
+        </style>
+    <link rel="stylesheet" type="text/css" href="https://js.api.here.com/v3/3.1/mapsjs-ui.css" />
+</head>
+<body>
+    <header>
+        <h1>Lumen: Locate and Book EV Station Easily</h1>
+        <nav id="user-nav">
+            <span id="user-info"></span>
+            <button id="logout-button">Logout</button>
+            
+        </nav>
+    </header>
+    <main>
+        <div id="map-container"></div>
+        <div id="search-container">
+            <input type="text" id="location-input" placeholder="Enter your location">
+            <button id="search-button">Search</button>
+        </div>
+        <div id="results-container"></div>
+        
+        <!-- Booking form container -->
+        <div id="booking-form-container" style="display: none;">
+            <form id="booking-form">
+                <h3>Book Charging Station</h3>
+                <input type="text" id="ev-model" placeholder="EV Model" required>
+                <input type="date" id="booking-date" required>
+                <input type="time" id="booking-time" required>
+                <button type="submit">Submit Booking</button>
+                <button type="button" id="cancel-booking">Cancel</button>
+            </form>
+        </div>
+        <div id="dashboard-container"></div> 
+        
+        <form id="admin-login-form" style="display: none;">
+            <input type="text" id="admin-username" placeholder="Admin Username" required>
+            <input type="password" id="admin-password" placeholder="Admin Password" required>
+            <button type="submit">Login</button>
+        </form>
+        <div id="admin-portal" style="display: none;">
+            <h2>Admin Portal</h2>
+            <div id="admin-dashboard"></div>
+            <button id="admin-logout">Logout</button>
+        </div>
+        <!-- <button id="show-admin-login">Admin Login</button> -->
+    </main>
+    <script src="script.js"></script>
+    <!-- <script src="https://cdn.voiceflow.com/widget/web-sdk.js"></script> -->
+</body>
+</html>

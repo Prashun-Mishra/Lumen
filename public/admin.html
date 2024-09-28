@@ -1,0 +1,140 @@
+<!-- public/admin.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - funCharge</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Admin Dashboard</h1>
+        <nav id="admin-nav">
+            <span id="admin-info"></span>
+            <button id="admin-logout-button">Logout</button>
+        </nav>
+    </header>
+    <main>
+        <h2>Pending Bookings</h2>
+        <div id="booking-requests"></div>
+    </main>
+    <script >
+      // public/admin.js
+// public/admin.js
+
+document.addEventListener('DOMContentLoaded', async () => {
+    const adminInfo = document.getElementById('admin-info');
+    const bookingRequestsContainer = document.getElementById('booking-requests');
+    const adminLogoutButton = document.getElementById('admin-logout-button');
+
+    const token = localStorage.getItem('admin-token');
+    if (!token) {
+        alert('You must be logged in as admin.');
+        window.location.href = 'admin-login.html'; // Redirect to admin login
+        return;
+    }
+
+    // Fetch pending booking requests
+    const response = await fetch('/bookings/requests', {
+        headers: {
+            'Authorization': token
+        }
+    });
+
+    if (response.ok) {
+        const bookings = await response.json();
+        bookings.forEach(booking => {
+            const requestCard = document.createElement('div');
+            requestCard.className = 'booking-request';
+            requestCard.innerHTML = `
+                <p><strong>User:</strong> ${booking.user.username} (${booking.user.email})</p>
+                <p><strong>Station:</strong> ${booking.station}</p>
+                <p><strong>EV Model:</strong> ${booking.evModel}</p>
+                <p><strong>Date:</strong> ${new Date(booking.date).toLocaleDateString()}</p>
+                <p><strong>Time:</strong> ${booking.time}</p>
+                <button class="approve-button" data-id="${booking._id}">Approve</button>
+                <button class="reject-button" data-id="${booking._id}">Reject</button>
+            `;
+            bookingRequestsContainer.appendChild(requestCard);
+
+            // Handle approve button click
+            requestCard.querySelector('.approve-button').addEventListener('click', async () => {
+                const approveResponse = await fetch(`/bookings/approve/${booking._id}`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': token
+                    }
+                });
+
+                if (approveResponse.ok) {
+                    alert('Booking approved');
+                    requestCard.remove(); // Remove the approved request from UI
+                } else {
+                    alert('Failed to approve booking');
+                }
+            });
+
+            // Handle reject button click
+            requestCard.querySelector('.reject-button').addEventListener('click', async () => {
+                const rejectResponse = await fetch(`/bookings/reject/${booking._id}`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': token
+                    }
+                });
+
+                if (rejectResponse.ok) {
+                    alert('Booking rejected');
+                    requestCard.remove(); // Remove the rejected request from UI
+                } else {
+                    alert('Failed to reject booking');
+                }
+            });
+        });
+    } else {
+        alert('Failed to fetch booking requests.');
+    }
+
+    // Logout functionality
+    adminLogoutButton.addEventListener('click', () => {
+        localStorage.removeItem('admin-token'); // Remove admin token from local storage
+        window.location.href = 'admin-login.html'; // Redirect to admin login
+    });
+});
+
+      adminForm.onsubmit = async function (e) {
+    e.preventDefault();
+    const username = document.getElementById('admin-username').value;
+    const email = document.getElementById('admin-email').value;
+    const password = document.getElementById('admin-password').value;
+
+    const url = action === 'register' ? '/adminAuth/register' : '/adminAuth/login';
+
+    const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, email, password })
+    });
+
+    if (response.ok) {
+        const data = await response.json();
+        if (action === 'login') {
+            localStorage.setItem('admin-token', data.token);
+            window.location.href = 'admin.html'; // Redirect to admin dashboard
+        } else {
+            alert('Admin registered successfully! Please log in.');
+            showAdminForm('login');
+        }
+    } else {
+        const errorData = await response.json(); // Get the JSON error message
+        alert(`Failed to submit the form: ${errorData.error || 'Unknown error occurred.'}`);
+    }
+};
+
+
+
+
+    </script>
+</body>
+</html>
