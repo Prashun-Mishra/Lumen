@@ -1,10 +1,10 @@
 # Lumen
 It helps users find nearest electric vehicles charging stations from their entered location and also book them . It uses openchargeAPI , and HereMapAPI , which allows users to see the current status of the evStation whether it is available or not.  It also shows the charging speed and power of evStations. 
-# EV Charging Stadium Locator
+# EV Charging Station Locator
 
 ## Overview
 
-The **EV Charging Stadium Locator** is a web application designed to help users locate electric vehicle (EV) charging stations near them. Utilizing the HERE API and Open Charge Map API, the application provides an intuitive interface for users to search for charging stations, view details, and book charging slots.
+The **EV Charging Station Locator** is a web application designed to help users locate electric vehicle (EV) charging stations near them. Utilizing the HERE API and Open Charge Map API, the application provides an intuitive interface for users to search for charging stations, view details, and book charging slots.
 
 ## Features
 
